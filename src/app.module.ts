@@ -9,6 +9,7 @@ import { Invoice } from './typeorm/entities/Invoice';
 import { InvoiceDetail } from './typeorm/entities/InvoiceDetail';
 import { BookingStatus } from './typeorm/entities/BookingStatus';
 import { PersonalToken } from './typeorm/entities/PersonalToken';
+import { RoomsModule } from './rooms/rooms.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { PersonalToken } from './typeorm/entities/PersonalToken';
       synchronize: true,
     }),
     UsersModule,
+    RoomsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
