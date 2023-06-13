@@ -11,8 +11,6 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { STATUS_CODES } from 'http';
-import { async } from 'rxjs';
 
 @Controller('users')
 export class UsersController {
@@ -20,19 +18,24 @@ export class UsersController {
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    const { confirmPassword, ...detailUser } = createUserDto;
-    const user = this.usersService.create(detailUser);
-    if (!user) return new Error('Create user failed');
+    try {
+      const { confirmPassword, ...detailUser } = createUserDto;
+      const user = this.usersService.create(detailUser);
+      if (!user) return new Error('Create user failed');
 
-    return {
-      message: 'Create user successfully',
-    };
+      return {
+        message: 'Create user successfully',
+      };
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @Get()
   async findAll() {
     try {
       const users = await this.usersService.findAll();
+      if (!users) return new Error('Get users failed');
       return users;
     } catch (error) {
       console.log(error);
@@ -41,26 +44,39 @@ export class UsersController {
 
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    const user = await this.usersService.findOne(id);
-    return user;
+    try {
+      const user = await this.usersService.findOne(id);
+      if (!user) return new Error('User not found');
+      return user;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const res = this.usersService.update(+id, updateUserDto);
-    if (!res) return new Error('Update user failed');
+    try {
+      const res = this.usersService.update(+id, updateUserDto);
+      if (!res) return new Error('Update user failed');
 
-    return {
-      message: 'Update user successfully',
-    };
+      return {
+        message: 'Update user successfully',
+      };
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    const res = this.usersService.remove(+id);
-    if (!res) return new Error('Delete user failed');
-    return {
-      message: 'Delete user successfully',
-    };
+    try {
+      const res = this.usersService.remove(+id);
+      if (!res) return new Error('Delete user failed');
+      return {
+        message: 'Delete user successfully',
+      };
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
