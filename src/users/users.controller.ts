@@ -7,12 +7,14 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
   Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
+import { AuthGuard } from 'src/auth/auth.guard';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -33,6 +35,7 @@ export class UsersController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Get()
   async findAll(@Res() res: Response) {
     try {
@@ -45,7 +48,7 @@ export class UsersController {
       console.log(error);
     }
   }
-
+  @UseGuards(AuthGuard)
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
     try {
@@ -59,6 +62,7 @@ export class UsersController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: string,
@@ -78,11 +82,12 @@ export class UsersController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
     try {
       const response = this.usersService.remove(+id);
-      if (!res) return new Error('Delete user failed');
+      if (!response) return new Error('Delete user failed');
       res.header('X-Total-Count', '1');
       res.header('Access-Control-Expose-Headers', 'X-Total-Count');
       return res.json({

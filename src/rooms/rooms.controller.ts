@@ -9,11 +9,13 @@ import {
   Header,
   Res,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { RoomsService } from './rooms.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { Response, Request } from 'express';
+import { AuthGuard } from 'src/auth/auth.guard';
 @Controller('rooms')
 export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}
@@ -42,7 +44,7 @@ export class RoomsController {
       console.log(error);
     }
   }
-
+  @UseGuards(AuthGuard)
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
     try {
