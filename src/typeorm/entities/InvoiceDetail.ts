@@ -12,13 +12,13 @@ import { Room } from './Room';
 @Entity({ name: 'invoice_detail' })
 export class InvoiceDetail {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @ManyToOne(() => Invoice, (invoice) => invoice.id)
-  invoice: Invoice;
+  invoice: number;
 
-  @OneToOne(() => Room, (room) => room.id)
-  room: Room;
+  @ManyToOne(() => Room, (room) => room.id)
+  room: number;
 
   @Column()
   price: string;

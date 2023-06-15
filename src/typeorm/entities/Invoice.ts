@@ -11,10 +11,10 @@ import { User } from './User';
 @Entity({ name: 'invoice' })
 export class Invoice {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @ManyToOne(() => User, (user) => user.id)
-  user: User;
+  user: number;
 
   @Column()
   total_price: string;
@@ -23,5 +23,5 @@ export class Invoice {
     type: 'date',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  invoice_date: string;
+  invoice_date?: Date;
 }

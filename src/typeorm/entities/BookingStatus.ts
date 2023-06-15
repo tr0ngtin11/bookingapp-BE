@@ -11,18 +11,18 @@ import { User } from './User';
 @Entity({ name: 'booking_status' })
 export class BookingStatus {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
-  @OneToOne(() => Invoice, (invoice) => invoice.id)
-  invoice: Invoice;
+  @ManyToOne(() => Invoice, (invoice) => invoice.id)
+  invoice: number;
 
   @ManyToOne(() => User, (user) => user.id)
-  user: User;
+  user: number;
 
   @Column({
     type: 'enum',
     enum: ['unconfirmed', 'confirmed'],
     default: 'unconfirmed',
   })
-  status: string;
+  status?: string;
 }

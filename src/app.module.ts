@@ -11,6 +11,7 @@ import { BookingStatus } from './typeorm/entities/BookingStatus';
 import { PersonalToken } from './typeorm/entities/PersonalToken';
 import { RoomsModule } from './rooms/rooms.module';
 import { AuthModule } from './auth/auth.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     RoomsModule,
     AuthModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
