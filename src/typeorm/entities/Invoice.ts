@@ -5,6 +5,7 @@ import {
   Generated,
   OneToMany,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { User } from './User';
 
@@ -14,6 +15,7 @@ export class Invoice {
   id?: number;
 
   @ManyToOne(() => User, (user) => user.id)
+  @JoinColumn({ name: 'userId' })
   user: number;
 
   @Column()

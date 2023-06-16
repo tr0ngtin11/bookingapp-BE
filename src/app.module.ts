@@ -12,6 +12,8 @@ import { PersonalToken } from './typeorm/entities/PersonalToken';
 import { RoomsModule } from './rooms/rooms.module';
 import { AuthModule } from './auth/auth.module';
 import { PaymentModule } from './payment/payment.module';
+import { InvoiceModule } from './invoice/invoice.module';
+import { InvoiceDetailModule } from './invoice_detail/invoice_detail.module';
 
 @Module({
   imports: [
@@ -36,6 +38,8 @@ import { PaymentModule } from './payment/payment.module';
     RoomsModule,
     AuthModule,
     PaymentModule,
+    InvoiceModule,
+    InvoiceDetailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
