@@ -19,8 +19,11 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  signIn(@Body() signInDto: SignInDTO) {
-    const res = this.authService.signIn(signInDto.email, signInDto.password);
+  async signIn(@Body() signInDto: SignInDTO) {
+    const res = await this.authService.signIn(
+      signInDto.email,
+      signInDto.password,
+    );
     console.log('aaa', res);
     return res;
   }

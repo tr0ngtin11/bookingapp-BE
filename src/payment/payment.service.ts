@@ -24,27 +24,50 @@ export class PaymentService {
   ) {}
 
   async create(paymentInfor: CreatePaymentDto) {
-    const invoice_input: Invoice = {
-      user: paymentInfor.userId,
-      total_price: paymentInfor.total,
-    };
-    const invoice = this.invoiceRepository.create(invoice_input);
-    await this.invoiceRepository.save(invoice);
-    const id_invoice = invoice.id;
-    const booking = this.bookingStatusRepository.create({
-      user: paymentInfor.userId,
-      invoice: invoice.id,
-    });
-    await this.bookingStatusRepository.save(booking);
-    paymentInfor.room.forEach(async (detail, index) => {
-      const invoice_dtail = this.invoiceDetailRepository.create({
-        price: detail.price,
+    try {
+      const list_room = paymentInfor.room;
+      const total_input = list_room.reduce((acc, cur) => {
+        return acc + parseInt(cur.price);
+      }, 0);
+      const invoice_input: Invoice = {
+        user: paymentInfor.userId,
+        total_price: total_input.toString(),
+      };
+      const invoice = this.invoiceRepository.create(invoice_input);
+      await this.invoiceRepository.save(invoice);
+      const booking = this.bookingStatusRepository.create({
+        user: paymentInfor.userId,
+        invoice: invoice.id,
       });
-      invoice_dtail.room = parseInt(detail.roomId);
-      invoice_dtail.invoice = invoice.id;
-      await this.invoiceDetailRepository.save(invoice_dtail);
-    });
+      await this.bookingStatusRepository.save(booking);
+      paymentInfor.room.forEach(async (detail, index) => {
+        const invoice_dtail = this.invoiceDetailRepository.create({
+          price: detail.price,
+        });
+        invoice_dtail.room = detail.roomId;
+        invoice_dtail.invoice = invoice.id;
+        await this.invoiceDetailRepository.save(invoice_dtail);
+      });
 
-    return true;
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  async revenue() {
+    try {
+      let total = 0;
+      const invoice_list = await this.invoiceRepository.find();
+      const revenue = invoice_list.reduce((acc, cur) => {
+        total += parseInt(cur.total_price);
+        return total;
+      }, 0);
+      return revenue;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 }

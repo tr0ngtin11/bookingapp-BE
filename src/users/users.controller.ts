@@ -20,19 +20,15 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
-    try {
-      const { confirmPassword, ...detailUser } = createUserDto;
-      const user = this.usersService.create(detailUser);
-      if (!user) return new Error('Create user failed');
-      res.header('X-Total-Count', '1');
-      res.header('Access-Control-Expose-Headers', 'X-Total-Count');
-      return res.json({
-        message: 'Create user successfully',
-      });
-    } catch (error) {
-      console.log(error);
-    }
+  create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
+    const { confirmPassword, ...detailUser } = createUserDto;
+    const user = this.usersService.create(detailUser);
+    if (!user) return new Error('Create user failed');
+    res.header('X-Total-Count', '1');
+    res.header('Access-Control-Expose-Headers', 'X-Total-Count');
+    return res.json({
+      message: 'Create user successfully',
+    });
   }
 
   @UseGuards(AuthGuard)

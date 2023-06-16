@@ -4,7 +4,7 @@ export class CreatePaymentDto {
   userId: number;
   room: [
     {
-      roomId: string;
+      roomId: number;
       type: string;
       price: string;
     },
