@@ -44,7 +44,7 @@ export class RoomsController {
       console.log(error);
     }
   }
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
     try {

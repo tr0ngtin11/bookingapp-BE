@@ -31,7 +31,7 @@ export class UsersController {
     });
   }
 
-  @UseGuards(AuthGuard)
+  //@UseGuards(AuthGuard)
   @Get()
   async findAll(@Res() res: Response) {
     try {
@@ -44,7 +44,7 @@ export class UsersController {
       console.log(error);
     }
   }
-  @UseGuards(AuthGuard)
+  //@UseGuards(AuthGuard)
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
     try {
@@ -58,7 +58,7 @@ export class UsersController {
     }
   }
 
-  @UseGuards(AuthGuard)
+  //@UseGuards(AuthGuard)
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: string,
@@ -78,7 +78,7 @@ export class UsersController {
     }
   }
 
-  @UseGuards(AuthGuard)
+  //@UseGuards(AuthGuard)
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
     try {

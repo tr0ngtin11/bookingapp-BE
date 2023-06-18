@@ -1,5 +1,17 @@
-import { Controller, Get, Post, Body, Param, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Res,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
+// import { CreateInvoiceDto } from './dto/create-invoice.dto';
+// import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 
 import { CreatePaymentDto } from 'src/invoice/dto/create-payments-dto';
 import { Response } from 'express';
@@ -8,21 +20,53 @@ export class InvoiceController {
   constructor(private readonly invoiceService: InvoiceService) {}
 
   @Get()
-  findAll() {
-    return this.invoiceService.findAll();
+  async findAll(@Res() res: Response) {
+    try {
+      const invoices = await this.invoiceService.findAll();
+      if (!invoices) return new Error('Get invoices failed');
+      res.header('X-Total-Count', invoices.length.toString());
+      res.header('Access-Control-Expose-Headers', 'X-Total-Count');
+      return res.json(invoices);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.invoiceService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
+    try {
+      const invoice = await this.invoiceService.findOne(+id);
+      if (!invoice) return new Error('Invoice not found');
+      res.header('X-Total-Count', '1');
+      res.header('Access-Control-Expose-Headers', 'X-Total-Count');
+      return res.json(invoice);
+    } catch (error) {
+      console.log(error);
+    }
   }
-  @Post()
-  create(@Body() createPaymentDto: CreatePaymentDto, @Res() res: Response) {
-    const payment = this.invoiceService.create(createPaymentDto);
-    if (!payment) return new Error('Create payment failed');
-    const stringResult = 'Create payment successfully';
-    return res.json({
-      message: 'Create payment successfully',
-    });
+
+  @Get('/user/:id')
+  async findOneByUserId(
+    @Param('id', ParseIntPipe) id: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const invoice = await this.invoiceService.findOneByUserId(+id);
+      if (!invoice) return new Error('Invoice not found');
+      res.header('X-Total-Count', '1');
+      res.header('Access-Control-Expose-Headers', 'X-Total-Count');
+      return res.json(invoice);
+    } catch (error) {
+      console.log(error);
+    }
   }
+  // @Post()
+  // create(@Body() createPaymentDto: CreatePaymentDto, @Res() res: Response) {
+  //   const payment = this.invoiceService.create(createPaymentDto);
+  //   if (!payment) return new Error('Create payment failed');
+  //   const stringResult = 'Create payment successfully';
+  //   return res.json({
+  //     message: 'Create payment successfully',
+  //   });
+  // }
 }
