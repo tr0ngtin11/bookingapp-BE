@@ -23,7 +23,6 @@ export class Invoice {
 
   @Column({
     type: 'date',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   invoice_date?: Date;
 }

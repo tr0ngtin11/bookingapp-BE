@@ -14,7 +14,6 @@ export class PersonalToken {
 
   @Column({
     type: 'date',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   create_at: string;
 

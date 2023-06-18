@@ -7,7 +7,6 @@ import { InvoiceDetail } from 'src/typeorm/entities/InvoiceDetail';
 import { BookingStatus } from 'src/typeorm/entities/BookingStatus';
 import { User } from 'src/typeorm/entities/User';
 import { Room } from 'src/typeorm/entities/Room';
-import { AuthModule } from 'src/auth/auth.module';
 import { RoomsModule } from 'src/rooms/rooms.module';
 import { UsersModule } from 'src/users/users.module';
 

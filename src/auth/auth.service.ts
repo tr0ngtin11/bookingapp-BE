@@ -21,7 +21,7 @@ export class AuthService {
     if (user?.password !== pass) {
       throw new UnauthorizedException();
     }
-    const payload = { id: user.id, email: user.email };
+    const payload = { id: user.sdt, email: user.email };
     const access_token = await this.jwtService.signAsync;
     console.log('bbb', access_token);
     return {

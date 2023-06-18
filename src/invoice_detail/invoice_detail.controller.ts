@@ -15,8 +15,6 @@ import { UpdateInvoiceDetailDto } from './dto/update-invoice_detail.dto';
 export class InvoiceDetailController {
   constructor(private readonly invoiceDetailService: InvoiceDetailService) {}
 
-  
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.invoiceDetailService.findOne(+id);
