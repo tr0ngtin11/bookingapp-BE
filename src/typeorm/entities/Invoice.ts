@@ -21,9 +21,6 @@ export class Invoice {
   @Column()
   total_price: string;
 
-  @Column({
-    type: 'date',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   invoice_date?: Date;
 }

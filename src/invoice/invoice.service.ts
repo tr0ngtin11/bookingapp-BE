@@ -23,7 +23,7 @@ export class InvoiceService {
     }
   }
 
-  async findOne(id: number) {
+  async findOneByUserId(id: number) {
     try {
       const invoices = await this.invoiceRepository.find({
         relations: ['user'],
@@ -44,5 +44,12 @@ export class InvoiceService {
       console.log(error);
       return false;
     }
+  }
+  findOne(id: number) {
+    const invoice = this.invoiceRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+    return invoice;
   }
 }

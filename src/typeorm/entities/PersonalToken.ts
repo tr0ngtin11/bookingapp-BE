@@ -12,10 +12,7 @@ export class PersonalToken {
   @Column()
   token: string;
 
-  @Column({
-    type: 'date',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   create_at: string;
 
   @Column({
