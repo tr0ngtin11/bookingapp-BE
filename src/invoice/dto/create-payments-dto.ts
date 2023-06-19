@@ -3,8 +3,6 @@ export class CreatePaymentDto {
   room: [
     {
       roomId: number;
-      type: string;
-      price: string;
     },
   ];
   total: string;

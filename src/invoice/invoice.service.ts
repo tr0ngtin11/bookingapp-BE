@@ -7,6 +7,7 @@ import { Room } from 'src/typeorm/entities/Room';
 import { User } from 'src/typeorm/entities/User';
 import { Repository } from 'typeorm';
 import { CreatePaymentDto } from './dto/create-payments-dto';
+import { async, retry } from 'rxjs';
 
 @Injectable()
 export class InvoiceService {
@@ -61,9 +62,15 @@ export class InvoiceService {
   async create(paymentInfor: CreatePaymentDto) {
     try {
       const list_room = paymentInfor.room;
-      const total_input = list_room.reduce((acc, cur) => {
-        return acc + parseInt(cur.price);
-      }, 0);
+      let total_input = 0;
+      list_room.forEach(async (detail, index) => {
+        const room = await this.roomsRepository.findOneBy({
+          id: detail.roomId,
+        });
+        if (room) {
+          total_input += parseInt(room.price);
+        }
+      });
       const user = await this.usersRepository.findOneBy({
         sdt: paymentInfor.sdt,
       });
