@@ -79,12 +79,17 @@ export class InvoiceService {
       });
       await this.bookingStatusRepository.save(booking);
       paymentInfor.room.forEach(async (detail, index) => {
-        const invoice_dtail = this.invoiceDetailRepository.create({
-          price: detail.price,
+        const room = await this.roomsRepository.findOneBy({
+          id: detail.roomId,
         });
-        invoice_dtail.room = detail.roomId;
-        invoice_dtail.invoice = invoice.id;
-        await this.invoiceDetailRepository.save(invoice_dtail);
+        if (room) {
+          const invoice_dtail = this.invoiceDetailRepository.create({
+            price: room.price.toString(),
+          });
+          invoice_dtail.room = room.id;
+          invoice_dtail.invoice = invoice.id;
+          await this.invoiceDetailRepository.save(invoice_dtail);
+        }
       });
 
       return true;

@@ -72,7 +72,7 @@ export class UsersController {
   ) {
     try {
       const salt = await bcrypt.genSalt();
-      const hash = await bcrypt.hash(createUserDto.password, salt);
+      const hash = await bcrypt.hash(updateUserDto.password, salt);
       console.log('hash', hash);
       const newUser = { ...updateUserDto, password: hash };
       const response = this.usersService.update(+id, newUser);
