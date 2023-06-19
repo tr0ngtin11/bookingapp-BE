@@ -19,7 +19,7 @@ import { InvoiceDetailModule } from './invoice_detail/invoice_detail.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: 'mysql',
       port: 3306,
       username: 'root',
       password: '',

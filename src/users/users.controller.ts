@@ -71,7 +71,11 @@ export class UsersController {
     @Res() res: Response,
   ) {
     try {
-      const response = this.usersService.update(+id, updateUserDto);
+      const salt = await bcrypt.genSalt();
+      const hash = await bcrypt.hash(createUserDto.password, salt);
+      console.log('hash', hash);
+      const newUser = { ...updateUserDto, password: hash };
+      const response = this.usersService.update(+id, newUser);
       if (!response) return new Error('Update user failed');
       res.header('X-Total-Count', '1');
       res.header('Access-Control-Expose-Headers', 'X-Total-Count');
