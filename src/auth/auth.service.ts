@@ -16,23 +16,33 @@ export class AuthService {
     private usersRepository: Repository<User>,
   ) {}
   async signIn(email, pass) {
-    const user = await this.usersService.findOneByEmail(email);
-    console.log('user', user);
-    if (user?.password !== pass) {
-      throw new UnauthorizedException();
+    try {
+      const user = await this.usersService.findOneByEmail(email);
+      console.log('user', user);
+      if (user?.password !== pass) {
+        throw new UnauthorizedException();
+      }
+      const payload = { id: user.id, email: user.email };
+      return {
+        status: true,
+        access_token: await this.jwtService.signAsync(payload),
+        user: user,
+      };
+    } catch (error) {
+      console.log(error);
+      return false;
     }
-    const payload = { id: user.sdt, email: user.email };
-    const access_token = await this.jwtService.signAsync;
-    console.log('bbb', access_token);
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
   }
 
   async signUp(@Body() user: User_I) {
-    if (user.email === undefined || user.password === undefined)
-      return new Error('Email or password is empty');
-    const newUser = this.usersRepository.create(user);
-    return this.usersRepository.save(newUser);
+    try {
+      if (user.email === undefined || user.password === undefined) return false;
+      const newUser = await this.usersRepository.create(user);
+      this.usersRepository.save(newUser);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 }

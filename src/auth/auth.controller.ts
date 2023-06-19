@@ -8,24 +8,28 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from './auth.guard';
 import { SignInDTO } from './dto/signIn-auth.dto';
-import { User_I } from 'src/interface/interface';
 import { Response } from 'express';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  async signIn(@Body() signInDto: SignInDTO) {
-    const res = await this.authService.signIn(
+  async signIn(@Body() signInDto: SignInDTO, @Res() res: Response) {
+    const user = await this.authService.signIn(
       signInDto.email,
       signInDto.password,
     );
+    if (!user) return new Error('Login failed');
     console.log('aaa', res);
-    return res;
+    return res.json({
+      message: 'Login successfully',
+      access_token: user.access_token,
+      user: user.user,
+    });
   }
 
   @Post('signup')

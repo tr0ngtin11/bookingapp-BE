@@ -4,6 +4,7 @@ import { UpdateRoomDto } from './dto/update-room.dto';
 import { Room } from 'src/typeorm/entities/Room';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { async } from 'rxjs';
 
 @Injectable()
 export class RoomsService {
@@ -11,28 +12,54 @@ export class RoomsService {
     @InjectRepository(Room)
     private roomsRepository: Repository<Room>,
   ) {}
-  create(createRoomDto: CreateRoomDto) {
-    const newRoom = this.roomsRepository.create(createRoomDto);
-    return this.roomsRepository.save(newRoom);
+  async create(createRoomDto: CreateRoomDto) {
+    try {
+      const newRoom = await this.roomsRepository.create(createRoomDto);
+      await this.roomsRepository.save(newRoom);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 
-  findAll() {
-    const rooms = this.roomsRepository.find();
-    return rooms;
+  async findAll() {
+    try {
+      const rooms = await this.roomsRepository.find();
+      return rooms;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 
-  findOne(id: number) {
-    const room = this.roomsRepository.findOne({ where: { id } });
-    return room;
+  async findOne(id: number) {
+    try {
+      const room = await this.roomsRepository.findOne({ where: { id } });
+      return room;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 
-  update(id: number, updateRoomDto: UpdateRoomDto) {
-    const res = this.roomsRepository.update(id, updateRoomDto);
-    return res;
+  async update(id: number, updateRoomDto: UpdateRoomDto) {
+    try {
+      await this.roomsRepository.update(id, updateRoomDto);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 
-  remove(id: number) {
-    const res = this.roomsRepository.delete(id);
-    return res;
+  async remove(id: number) {
+    try {
+      await this.roomsRepository.delete(id);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false; 
+    }
   }
 }

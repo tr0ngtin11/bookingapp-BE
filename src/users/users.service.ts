@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm/entities/User';
 import { User_I } from 'src/interface/interface';
+import { async } from 'rxjs';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +16,7 @@ export class UsersService {
   async create(userDetail: User_I) {
     try {
       const newUser = await this.usersRepository.create(userDetail);
-      this.usersRepository.save(newUser);
+      await this.usersRepository.save(newUser);
       return true;
     } catch (error) {
       console.log(error);
@@ -23,28 +24,53 @@ export class UsersService {
     }
   }
 
-  findAll() {
-    const users = this.usersRepository.find();
-    return users;
+  async findAll() {
+    try {
+      const users = await this.usersRepository.find();
+      return users;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 
-  findOne(id: number) {
-    const user = this.usersRepository.findOne({ where: { id } });
-    return user;
+  async findOne(id: number) {
+    try {
+      const user = await this.usersRepository.findOne({ where: { id } });
+      return user;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 
-  findOneByEmail(email: string) {
-    const user = this.usersRepository.findOne({ where: { email } });
-    return user;
+  async findOneByEmail(email: string) {
+    try {
+      const user = await this.usersRepository.findOne({ where: { email } });
+      return user;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    const res = this.usersRepository.update(id, updateUserDto);
-    return res;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    try {
+      await this.usersRepository.update(id, updateUserDto);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 
-  remove(id: number) {
-    const res = this.usersRepository.delete(id);
-    return res;
+  async remove(id: number) {
+    try {
+      await this.usersRepository.delete(id);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 }

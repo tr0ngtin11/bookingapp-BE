@@ -1,5 +1,5 @@
 export class CreatePaymentDto {
-  userId: number;
+  sdt: string;
   room: [
     {
       roomId: number;

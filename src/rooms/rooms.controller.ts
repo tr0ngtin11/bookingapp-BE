@@ -20,6 +20,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}
 
+  @UseGuards(AuthGuard)
   @Post()
   async create(@Body() createRoomDto: CreateRoomDto, @Res() res: Response) {
     const rooms = await this.roomsService.create(createRoomDto);
@@ -31,8 +32,8 @@ export class RoomsController {
     });
   }
 
+  @UseGuards(AuthGuard)
   @Get()
-  // @Header('Access-Control-Expose-Headers', 'X-Total-Count')
   async findAll(@Res() res: Response) {
     try {
       const rooms = await this.roomsService.findAll();
@@ -44,7 +45,7 @@ export class RoomsController {
       console.log(error);
     }
   }
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
     try {
@@ -58,6 +59,7 @@ export class RoomsController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: string,
@@ -78,6 +80,7 @@ export class RoomsController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
     try {

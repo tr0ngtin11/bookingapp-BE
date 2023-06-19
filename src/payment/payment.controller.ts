@@ -8,18 +8,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
-  // @UseGuards(AuthGuard)
-  @Post()
-  async create(
-    @Body() createPaymentDto: CreatePaymentDto,
-    @Res() res: Response,
-  ) {
-    const payment = await this.paymentService.create(createPaymentDto);
-    if (!payment) return new Error('Create payment failed');
-    return res.json({
-      message: 'Create payment successfully',
-    });
-  }
+  @UseGuards(AuthGuard)
   @Post('revenue')
   async revenue(@Res() res: Response) {
     const revenue = await this.paymentService.revenue();

@@ -64,14 +64,17 @@ export class InvoiceService {
       const total_input = list_room.reduce((acc, cur) => {
         return acc + parseInt(cur.price);
       }, 0);
+      const user = await this.usersRepository.findOneBy({
+        sdt: paymentInfor.sdt,
+      });
       const invoice_input: Invoice = {
-        user: paymentInfor.userId,
+        user: user.id,
         total_price: total_input.toString(),
       };
       const invoice = this.invoiceRepository.create(invoice_input);
       await this.invoiceRepository.save(invoice);
       const booking = this.bookingStatusRepository.create({
-        user: paymentInfor.userId,
+        user: user.id,
         invoice: invoice.id,
       });
       await this.bookingStatusRepository.save(booking);
@@ -90,11 +93,16 @@ export class InvoiceService {
       return false;
     }
   }
-  findOne(id: number) {
-    const invoice = this.invoiceRepository.findOne({
-      where: { id },
-      relations: ['user'],
-    });
-    return invoice;
+  async findOne(id: number) {
+    try {
+      const invoice = await this.invoiceRepository.findOne({
+        where: { id },
+        relations: ['user'],
+      });
+      return invoice;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 }

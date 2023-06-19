@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateInvoiceDetailDto } from './dto/create-invoice_detail.dto';
-import { UpdateInvoiceDetailDto } from './dto/update-invoice_detail.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InvoiceDetail } from 'src/typeorm/entities/InvoiceDetail';
 import { Repository } from 'typeorm';

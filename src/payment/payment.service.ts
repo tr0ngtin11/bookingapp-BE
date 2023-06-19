@@ -23,39 +23,6 @@ export class PaymentService {
     private bookingStatusRepository: Repository<BookingStatus>,
   ) {}
 
-  async create(paymentInfor: CreatePaymentDto) {
-    try {
-      const list_room = paymentInfor.room;
-      const total_input = list_room.reduce((acc, cur) => {
-        return acc + parseInt(cur.price);
-      }, 0);
-      const invoice_input: Invoice = {
-        user: paymentInfor.userId,
-        total_price: total_input.toString(),
-      };
-      const invoice = this.invoiceRepository.create(invoice_input);
-      await this.invoiceRepository.save(invoice);
-      const booking = this.bookingStatusRepository.create({
-        user: paymentInfor.userId,
-        invoice: invoice.id,
-      });
-      await this.bookingStatusRepository.save(booking);
-      paymentInfor.room.forEach(async (detail, index) => {
-        const invoice_dtail = this.invoiceDetailRepository.create({
-          price: detail.price,
-        });
-        invoice_dtail.room = detail.roomId;
-        invoice_dtail.invoice = invoice.id;
-        await this.invoiceDetailRepository.save(invoice_dtail);
-      });
-
-      return true;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  }
-
   async revenue() {
     try {
       let total = 0;
