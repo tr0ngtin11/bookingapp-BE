@@ -15,14 +15,19 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
+import * as bcrypt from 'bcryptjs';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseGuards(AuthGuard)
   @Post()
-  create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
-    const user = this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
+    const salt = await bcrypt.genSalt();
+    const hash = await bcrypt.hash(createUserDto.password, salt);
+    console.log('hash', hash);
+    const newUser = { ...createUserDto, password: hash };
+    const user = this.usersService.create(newUser);
     if (!user) return new Error('Create user failed');
     res.header('X-Total-Count', '1');
     res.header('Access-Control-Expose-Headers', 'X-Total-Count');

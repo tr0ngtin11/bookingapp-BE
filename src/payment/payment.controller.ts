@@ -12,7 +12,8 @@ export class PaymentController {
   @Post('revenue')
   async revenue(@Res() res: Response) {
     const revenue = await this.paymentService.revenue();
-    if (!revenue) return new Error('Get revenue failed');
+    console.log('revenue', revenue);
+    if (revenue === 'false') return res.json({ message: 'Get revenue failed' });
     res.header('X-Total-Count', '1');
     res.header('Access-Control-Expose-Headers', 'X-Total-Count');
     return res.json({

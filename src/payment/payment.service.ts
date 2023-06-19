@@ -33,8 +33,8 @@ export class PaymentService {
       }, 0);
       return revenue;
     } catch (error) {
-      console.log(error);
-      return false;
+      console.log('a');
+      return 'false';
     }
   }
 }
