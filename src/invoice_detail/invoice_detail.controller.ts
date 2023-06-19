@@ -21,8 +21,8 @@ export class InvoiceDetailController {
 
   @UseGuards(AuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string, @Res() res: Response) {
-    const invoice = this.invoiceDetailService.findOne(+id);
+  async findOne(@Param('id') id: string, @Res() res: Response) {
+    const invoice = await this.invoiceDetailService.findOne(+id);
     if (!invoice) {
       return res.status(404).json({
         message: 'Invoice not found',

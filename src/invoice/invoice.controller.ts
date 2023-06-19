@@ -20,9 +20,10 @@ export class InvoiceController {
 
   @UseGuards(AuthGuard)
   @Get()
-  findAll(@Res() res: Response) {
-    const invoices = this.invoiceService.findAll() || [];
+  async findAll(@Res() res: Response) {
+    const invoices = (await this.invoiceService.findAll()) || [];
     const invoices_length = Array.isArray(invoices) ? invoices.length : 0;
+    console.log('invoices', invoices);
     if (!invoices) return new Error('Get invoices failed');
     res.header('X-Total-Count', invoices_length.toString());
     res.header('Access-Control-Expose-Headers', 'X-Total-Count');
@@ -31,8 +32,8 @@ export class InvoiceController {
 
   @UseGuards(AuthGuard)
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
-    const invoice = this.invoiceService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
+    const invoice = await this.invoiceService.findOne(+id);
     if (!invoice) return new Error('Invoice not found');
     res.header('X-Total-Count', '1');
     res.header('Access-Control-Expose-Headers', 'X-Total-Count');
@@ -41,8 +42,11 @@ export class InvoiceController {
 
   @UseGuards(AuthGuard)
   @Get('/user/:id')
-  findOneByUserId(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
-    const invoice = this.invoiceService.findOneByUserId(+id);
+  async findOneByUserId(
+    @Param('id', ParseIntPipe) id: string,
+    @Res() res: Response,
+  ) {
+    const invoice = await this.invoiceService.findOneByUserId(+id);
     if (!invoice) return new Error('Invoice not found');
     res.header('X-Total-Count', '1');
     res.header('Access-Control-Expose-Headers', 'X-Total-Count');
@@ -51,8 +55,11 @@ export class InvoiceController {
 
   @UseGuards(AuthGuard)
   @Post()
-  create(@Body() createPaymentDto: CreatePaymentDto, @Res() res: Response) {
-    const payment = this.invoiceService.create(createPaymentDto);
+  async create(
+    @Body() createPaymentDto: CreatePaymentDto,
+    @Res() res: Response,
+  ) {
+    const payment = await this.invoiceService.create(createPaymentDto);
     if (!payment) return new Error('Create payment failed');
     return res.json({
       message: 'Create payment successfully',
