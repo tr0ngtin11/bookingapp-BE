@@ -6,7 +6,7 @@ import { User_I } from 'src/interface/interface';
 import { User } from 'src/typeorm/entities/User';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 @Injectable()
 export class AuthService {
   constructor(

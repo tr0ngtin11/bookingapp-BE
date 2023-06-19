@@ -22,8 +22,7 @@ export class UsersController {
   @UseGuards(AuthGuard)
   @Post()
   create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
-    const { confirmPassword, ...detailUser } = createUserDto;
-    const user = this.usersService.create(detailUser);
+    const user = this.usersService.create(createUserDto);
     if (!user) return new Error('Create user failed');
     res.header('X-Total-Count', '1');
     res.header('Access-Control-Expose-Headers', 'X-Total-Count');

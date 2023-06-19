@@ -12,7 +12,7 @@ import { SignInDTO } from './dto/signIn-auth.dto';
 import { Response } from 'express';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AuthGuard } from './auth.guard';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -23,7 +23,7 @@ export class AuthController {
       signInDto.email,
       signInDto.password,
     );
-console.log('user', user);
+    console.log('user', user);
     if (!user) return res.json({ message: 'Login failed' });
     return res.json({
       message: 'Login successfully',
