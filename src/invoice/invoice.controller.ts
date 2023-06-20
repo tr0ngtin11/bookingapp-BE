@@ -12,13 +12,17 @@ import { InvoiceService } from './invoice.service';
 
 import { CreatePaymentDto } from 'src/invoice/dto/create-payments-dto';
 import { Response } from 'express';
-import { Invoice } from 'src/typeorm/entities/Invoice';
+// import { Invoice } from 'src/typeorm/entities/Invoice';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { Roles } from 'src/auth/roles.decorator';
+// import { Role } from 'src/auth/enums/role.enum';
+import { RolesGuard } from 'src/auth/roles.guard';
 @Controller('invoice')
 export class InvoiceController {
   constructor(private readonly invoiceService: InvoiceService) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin', 'invoice manager')
   @Get()
   async findAll(@Res() res: Response) {
     const invoices = (await this.invoiceService.findAll()) || [];
@@ -30,7 +34,8 @@ export class InvoiceController {
     return res.json(invoices);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin', 'invoice manager')
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
     const invoice = await this.invoiceService.findOne(+id);
@@ -40,7 +45,8 @@ export class InvoiceController {
     return res.json(invoice);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin', 'invoice manager')
   @Get('/user/:id')
   async findOneByUserId(
     @Param('id', ParseIntPipe) id: string,
@@ -53,7 +59,8 @@ export class InvoiceController {
     return res.json(invoice);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin', 'invoice manager')
   @Post()
   async create(
     @Body() createPaymentDto: CreatePaymentDto,

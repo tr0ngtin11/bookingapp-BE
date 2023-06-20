@@ -22,7 +22,7 @@ import { InvoiceDetailModule } from './invoice_detail/invoice_detail.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '',
+      password: 'triet299',
       database: 'bookingapp',
       entities: [
         User,

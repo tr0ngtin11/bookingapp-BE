@@ -7,5 +7,4 @@ export class CreatePaymentDto {
       price: string;
     },
   ];
-  total: string;
 }

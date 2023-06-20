@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   UseGuards,
   Res,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,11 +17,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
 import * as bcrypt from 'bcryptjs';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
   @Post()
   async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
     const salt = await bcrypt.genSalt();
@@ -36,7 +40,8 @@ export class UsersController {
     });
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin', 'invoice manager', 'room manager')
   @Get()
   async findAll(@Res() res: Response) {
     try {
@@ -49,7 +54,8 @@ export class UsersController {
       console.log(error);
     }
   }
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin', 'invoice manager', 'room manager')
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
     try {
@@ -63,7 +69,8 @@ export class UsersController {
     }
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: string,

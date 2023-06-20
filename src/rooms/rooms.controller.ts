@@ -14,13 +14,16 @@ import {
 import { RoomsService } from './rooms.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
-import { Response, Request } from 'express';
+import { Response } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
 @Controller('rooms')
 export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin', 'room manager')
   @Post()
   async create(@Body() createRoomDto: CreateRoomDto, @Res() res: Response) {
     const rooms = await this.roomsService.create(createRoomDto);
@@ -32,7 +35,8 @@ export class RoomsController {
     });
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin', 'room manager')
   @Get()
   async findAll(@Res() res: Response) {
     try {
@@ -45,7 +49,8 @@ export class RoomsController {
       console.log(error);
     }
   }
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin', 'room manager')
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
     try {
@@ -59,7 +64,8 @@ export class RoomsController {
     }
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin', 'room manager')
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: string,
@@ -80,7 +86,8 @@ export class RoomsController {
     }
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin', 'room manager')
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
     try {
