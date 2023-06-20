@@ -45,21 +45,19 @@ export class UsersController {
       res.header('X-Total-Count', users.length.toString());
       res.header('Access-Control-Expose-Headers', 'X-Total-Count');
       return res.json(users);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
   @UseGuards(AuthGuard)
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
     try {
       const user = await this.usersService.findOne(id);
-      if (!user) return new Error('User not found');
+      if (!user) return res.json({ message: 'User not found' });
       res.header('X-Total-Count', '1');
       res.header('Access-Control-Expose-Headers', 'X-Total-Count');
       return res.json(user);
     } catch (error) {
-      console.log(error);
+      return new Error('Get user failed');
     }
   }
 
@@ -82,9 +80,7 @@ export class UsersController {
       return res.json({
         message: 'Update user successfully',
       });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 
   @UseGuards(AuthGuard)
@@ -98,8 +94,6 @@ export class UsersController {
       return res.json({
         message: 'Delete user successfully',
       });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 }

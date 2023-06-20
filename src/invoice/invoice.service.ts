@@ -7,7 +7,6 @@ import { Room } from 'src/typeorm/entities/Room';
 import { User } from 'src/typeorm/entities/User';
 import { Repository } from 'typeorm';
 import { CreatePaymentDto } from './dto/create-payments-dto';
-import { async, retry } from 'rxjs';
 
 @Injectable()
 export class InvoiceService {
@@ -26,12 +25,13 @@ export class InvoiceService {
 
   async findAll() {
     try {
-      const invoices = await this.invoiceRepository.find({
-        relations: ['user'],
-      });
+      const invoices =
+        (await this.invoiceRepository.find({
+          relations: ['user'],
+        })) || false;
+      if (!invoices) return false;
       return invoices;
     } catch (error) {
-      console.log(error);
       return false;
     }
   }
@@ -54,7 +54,6 @@ export class InvoiceService {
       });
       return list_invoice;
     } catch (error) {
-      console.log(error);
       return false;
     }
   }
@@ -69,6 +68,8 @@ export class InvoiceService {
         });
         if (room) {
           total_input += parseInt(room.price);
+          room.status = 'unavailable';
+          this.roomsRepository.save(room);
         }
       });
       const user = await this.usersRepository.findOneBy({
@@ -101,7 +102,6 @@ export class InvoiceService {
 
       return true;
     } catch (error) {
-      console.log(error);
       return false;
     }
   }
@@ -110,10 +110,22 @@ export class InvoiceService {
       const invoice = await this.invoiceRepository.findOne({
         where: { id },
         relations: ['user'],
-      });
+      }) || false;
+      if (!invoice) return false;
       return invoice;
     } catch (error) {
-      console.log(error);
+      return false;
+    }
+  }
+
+  async remove(id: number) {
+    try {
+      await this.invoiceDetailRepository.delete({ invoice: id });
+      await this.bookingStatusRepository.delete({ invoice: id });
+      const invoice = await this.invoiceRepository.delete(id);
+      if (invoice.affected === 0) return false;
+      return true;
+    } catch (error) {
       return false;
     }
   }

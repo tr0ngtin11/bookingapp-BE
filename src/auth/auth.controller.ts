@@ -46,9 +46,7 @@ export class AuthController {
       return res.json({
         message: 'Create user successfully',
       });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 
   @UseGuards(AuthGuard)

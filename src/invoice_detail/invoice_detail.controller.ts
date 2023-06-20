@@ -8,6 +8,7 @@ import {
   Delete,
   Res,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { InvoiceDetailService } from './invoice_detail.service';
 import { CreateInvoiceDetailDto } from './dto/create-invoice_detail.dto';
@@ -29,5 +30,19 @@ export class InvoiceDetailController {
       });
     }
     return res.json(invoice);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
+    const result = await this.invoiceDetailService.remove(+id);
+    if (!result) {
+      return res.status(404).json({
+        message: 'Delete invoice failed',
+      });
+    }
+    return res.json({
+      message: 'Delete invoice successfully',
+    });
   }
 }

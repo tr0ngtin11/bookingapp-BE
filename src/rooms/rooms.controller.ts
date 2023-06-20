@@ -23,13 +23,17 @@ export class RoomsController {
   @UseGuards(AuthGuard)
   @Post()
   async create(@Body() createRoomDto: CreateRoomDto, @Res() res: Response) {
-    const rooms = await this.roomsService.create(createRoomDto);
-    if (!rooms) return new Error('Create room failed');
-    res.header('X-Total-Count', '1');
-    res.header('Access-Control-Expose-Headers', 'X-Total-Count');
-    return res.json({
-      message: 'Create room successfully',
-    });
+    try {
+      const rooms = await this.roomsService.create(createRoomDto);
+      if (!rooms) return new Error('Create room failed');
+      res.header('X-Total-Count', '1');
+      res.header('Access-Control-Expose-Headers', 'X-Total-Count');
+      return res.json({
+        message: 'Create room successfully',
+      });
+    } catch (error) {
+      return new Error('Create room failed');
+    }
   }
 
   @UseGuards(AuthGuard)
@@ -42,7 +46,7 @@ export class RoomsController {
       res.header('Access-Control-Expose-Headers', 'X-Total-Count');
       return res.json(rooms);
     } catch (error) {
-      console.log(error);
+      return new Error('Get rooms failed');
     }
   }
   @UseGuards(AuthGuard)
@@ -55,7 +59,7 @@ export class RoomsController {
       res.header('Access-Control-Expose-Headers', 'X-Total-Count');
       return res.json(room);
     } catch (error) {
-      console.log(error);
+      return new Error('Get room failed');
     }
   }
 
@@ -68,7 +72,6 @@ export class RoomsController {
   ) {
     try {
       const room = await this.roomsService.update(+id, updateRoomDto);
-      console.log('aaa', room);
       if (!room) return new Error('Update room failed');
       res.header('X-Total-Count', '1');
       res.header('Access-Control-Expose-Headers', 'X-Total-Count');
@@ -76,7 +79,7 @@ export class RoomsController {
         message: 'Update room successfully',
       });
     } catch (error) {
-      console.log(error);
+      return new Error('Update room failed');
     }
   }
 
@@ -92,7 +95,7 @@ export class RoomsController {
         message: 'Delete room successfully',
       });
     } catch (error) {
-      console.log(error);
+      return new Error('Delete room failed');
     }
   }
 }

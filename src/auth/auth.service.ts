@@ -32,7 +32,6 @@ export class AuthService {
         } else return false;
       } else return false;
     } catch (error) {
-      console.log(error);
       return false;
     }
   }
@@ -44,7 +43,6 @@ export class AuthService {
       await this.usersRepository.save(newUser);
       return true;
     } catch (error) {
-      console.log(error);
       return false;
     }
   }

@@ -14,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { PaymentModule } from './payment/payment.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { InvoiceDetailModule } from './invoice_detail/invoice_detail.module';
+import { BookingstatusModule } from './bookingstatus/bookingstatus.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { InvoiceDetailModule } from './invoice_detail/invoice_detail.module';
     PaymentModule,
     InvoiceModule,
     InvoiceDetailModule,
+    BookingstatusModule,
   ],
   controllers: [AppController],
   providers: [AppService],

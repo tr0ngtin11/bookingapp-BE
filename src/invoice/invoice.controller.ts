@@ -7,6 +7,7 @@ import {
   Res,
   ParseIntPipe,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 
@@ -63,6 +64,16 @@ export class InvoiceController {
     if (!payment) return new Error('Create payment failed');
     return res.json({
       message: 'Create payment successfully',
+    });
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
+    const invoice = await this.invoiceService.remove(+id);
+    if (!invoice) return new Error('Delete invoice failed');
+    return res.json({
+      message: 'Delete invoice successfully',
     });
   }
 }

@@ -4,7 +4,6 @@ import { UpdateRoomDto } from './dto/update-room.dto';
 import { Room } from 'src/typeorm/entities/Room';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { async } from 'rxjs';
 
 @Injectable()
 export class RoomsService {
@@ -18,48 +17,47 @@ export class RoomsService {
       await this.roomsRepository.save(newRoom);
       return true;
     } catch (error) {
-      console.log(error);
       return false;
     }
   }
 
   async findAll() {
     try {
-      const rooms = await this.roomsRepository.find();
+      const rooms = (await this.roomsRepository.find()) || false;
+      if (!rooms) return false;
       return rooms;
     } catch (error) {
-      console.log(error);
       return false;
     }
   }
 
   async findOne(id: number) {
     try {
-      const room = await this.roomsRepository.findOne({ where: { id } });
+      const room =
+        (await this.roomsRepository.findOne({ where: { id } })) || false;
+      if (!room) return false;
       return room;
     } catch (error) {
-      console.log(error);
       return false;
     }
   }
 
   async update(id: number, updateRoomDto: UpdateRoomDto) {
     try {
-      await this.roomsRepository.update(id, updateRoomDto);
-      return true;
+      const res = await this.roomsRepository.update(id, updateRoomDto);
+      if (res.affected === 0) return false;
     } catch (error) {
-      console.log(error);
       return false;
     }
   }
 
   async remove(id: number) {
     try {
-      await this.roomsRepository.delete(id);
+      const res = await this.roomsRepository.delete(id);
+      if (res.affected === 0) return false;
       return true;
     } catch (error) {
-      console.log(error);
-      return false; 
+      return false;
     }
   }
 }
