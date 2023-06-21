@@ -5,5 +5,4 @@ export class CreatePaymentDto {
       roomId: number;
     },
   ];
-  total: string;
 }
