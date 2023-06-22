@@ -4,8 +4,6 @@ import { InvoiceDetail } from 'src/typeorm/entities/InvoiceDetail';
 import { Room } from 'src/typeorm/entities/Room';
 import { Repository } from 'typeorm';
 
-// viết hàm tính 2 số a + b khi nhận vào 2 tham số a, b
-
 @Injectable()
 export class InvoiceDetailService {
   constructor(
