@@ -13,11 +13,10 @@ import { InvoiceService } from './invoice.service';
 
 import { CreatePaymentDto } from 'src/invoice/dto/create-payments-dto';
 import { Response } from 'express';
-// import { Invoice } from 'src/typeorm/entities/Invoice';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Roles } from 'src/auth/roles.decorator';
-// import { Role } from 'src/auth/enums/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { Invoice_custom } from 'src/interface/interface';
 @Controller('invoice')
 export class InvoiceController {
   constructor(private readonly invoiceService: InvoiceService) {}
@@ -26,9 +25,10 @@ export class InvoiceController {
   @Roles('admin', 'invoice manager', 'room manager')
   @Get()
   async findAll(@Res() res: Response) {
-    const invoices = (await this.invoiceService.findAll()) || [];
+    const invoices = await this.invoiceService.findAll();
+    console.log('invoices111333', invoices);
     const invoices_length = Array.isArray(invoices) ? invoices.length : 0;
-    console.log('invoices', invoices);
+    console.log('invoices2222', invoices_length);
     if (!invoices) return new Error('Get invoices failed');
     res.header('X-Total-Count', invoices_length.toString());
     res.header('Access-Control-Expose-Headers', 'X-Total-Count');
