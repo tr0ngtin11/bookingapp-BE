@@ -23,7 +23,7 @@ export class InvoiceDetailController {
   constructor(private readonly invoiceDetailService: InvoiceDetailService) {}
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles('admin', 'invoice manager')
+  @Roles('admin', 'invoice manager', 'room manager')
   @Get(':id')
   async findOne(@Param('id') id: string, @Res() res: Response) {
     const invoice = await this.invoiceDetailService.findOne(+id);
