@@ -22,7 +22,7 @@ export class InvoiceController {
   constructor(private readonly invoiceService: InvoiceService) {}
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles('admin', 'invoice manager')
+  @Roles('admin', 'invoice manager', 'room manager')
   @Get()
   async findAll(@Res() res: Response) {
     const invoices = await this.invoiceService.findAll();
@@ -36,7 +36,7 @@ export class InvoiceController {
   }
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles('admin', 'invoice manager')
+  @Roles('admin', 'invoice manager', 'room manager')
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: string, @Res() res: Response) {
     const invoice = await this.invoiceService.findOne(+id);
