@@ -7,6 +7,7 @@ import { Room } from 'src/typeorm/entities/Room';
 import { User } from 'src/typeorm/entities/User';
 import { Repository } from 'typeorm';
 import { CreatePaymentDto } from './dto/create-payments-dto';
+import { Invoice_custom } from 'src/interface/interface';
 
 @Injectable()
 export class InvoiceService {
@@ -25,12 +26,27 @@ export class InvoiceService {
 
   async findAll() {
     try {
-      const invoices =
-        (await this.invoiceRepository.find({
-          relations: ['user'],
-        })) || false;
-      if (!invoices) return false;
-      return invoices;
+      const invoices = await this.invoiceRepository.find({
+        relations: ['user'],
+      });
+      let invoices_custom: Invoice_custom[] = [];
+      if (Array.isArray(invoices)) {
+        await Promise.all(
+          invoices?.map(async (invoice) => {
+            const bookingStatus = await this.bookingStatusRepository.findOneBy({
+              invoice: invoice.id,
+            });
+            invoices_custom.push({
+              ...invoice,
+              status: bookingStatus?.status.toString(),
+            });
+            console.log('invoices111', invoices_custom);
+          }),
+        );
+      }
+      console.log('1');
+      if (!invoices_custom) return false;
+      return invoices_custom;
     } catch (error) {
       return false;
     }
@@ -107,10 +123,11 @@ export class InvoiceService {
   }
   async findOne(id: number) {
     try {
-      const invoice = await this.invoiceRepository.findOne({
-        where: { id },
-        relations: ['user'],
-      }) || false;
+      const invoice =
+        (await this.invoiceRepository.findOne({
+          where: { id },
+          relations: ['user'],
+        })) || false;
       if (!invoice) return false;
       return invoice;
     } catch (error) {

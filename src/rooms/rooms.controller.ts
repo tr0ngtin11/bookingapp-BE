@@ -45,6 +45,7 @@ export class RoomsController {
   async findAll(@Res() res: Response) {
     try {
       const rooms = await this.roomsService.findAll();
+      console.log('2');
       if (!rooms) return new Error('Get rooms failed');
       res.header('X-Total-Count', rooms.length.toString());
       res.header('Access-Control-Expose-Headers', 'X-Total-Count');
