@@ -32,15 +32,20 @@ export class InvoiceService {
       let invoices_custom: Invoice_custom[] = [];
       if (Array.isArray(invoices)) {
         await Promise.all(
-          invoices?.map(async (invoice) => {
-            const bookingStatus = await this.bookingStatusRepository.findOneBy({
-              invoice: invoice.id,
+          invoices.map(async (invoice) => {
+            console.log('bookingStatus', invoice.id);
+            const id = invoice.id;
+            const bookingStatus = await this.bookingStatusRepository.find({
+              loadRelationIds: {
+                relations: ['invoice'],
+              },
             });
+            console.log('bookingStatus', bookingStatus);
+            const e = bookingStatus.find((e) => e.invoice === id);
             invoices_custom.push({
               ...invoice,
-              status: bookingStatus?.status.toString(),
+              status: e?.status,
             });
-            console.log('invoices111', invoices_custom);
           }),
         );
       }

@@ -23,7 +23,7 @@ import { InvoiceDetailService } from 'src/invoice_detail/invoice_detail.service'
     ]),
     RoomsModule,
     UsersModule,
-  
+    BookingStatus,
   ],
   controllers: [InvoiceController],
   providers: [InvoiceService],

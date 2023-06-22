@@ -18,7 +18,6 @@ export class AuthService {
   async signIn(email, pass) {
     try {
       const user = await this.usersService.findOneByEmail(email);
-      console.log('user', user);
       if (user) {
         const hashPassword = user.password;
         const isMatch = await bcrypt.compare(pass, hashPassword);

@@ -23,7 +23,6 @@ export class RoomsService {
 
   async findAll() {
     try {
-      console.log('1');
       const rooms = (await this.roomsRepository.find()) || false;
       if (!rooms) return false;
       return rooms;

@@ -52,7 +52,6 @@ export class BookingstatusService {
       }
       return true;
     } catch (error) {
-      console.log(error);
       return false;
     }
   }

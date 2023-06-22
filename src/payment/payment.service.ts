@@ -33,7 +33,6 @@ export class PaymentService {
       }, 0);
       return revenue;
     } catch (error) {
-      console.log('a');
       return 'false';
     }
   }

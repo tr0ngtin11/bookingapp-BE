@@ -23,7 +23,6 @@ export class AuthController {
       signInDto.email,
       signInDto.password,
     );
-    console.log('user', user);
     if (!user) return res.json({ message: 'Login failed' });
     return res.json({
       message: 'Login successfully',
@@ -37,7 +36,6 @@ export class AuthController {
     try {
       const salt = await bcrypt.genSalt();
       const hash = await bcrypt.hash(createUserDto.password, salt);
-      console.log('hash', hash);
       const newUser = { ...createUserDto, password: hash };
       const user = this.authService.signUp(newUser);
       if (!user) return new Error('Create user failed');

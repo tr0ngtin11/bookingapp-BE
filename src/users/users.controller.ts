@@ -29,7 +29,6 @@ export class UsersController {
   async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(createUserDto.password, salt);
-    console.log('hash', hash);
     const newUser = { ...createUserDto, password: hash };
     const user = this.usersService.create(newUser);
     if (!user) return new Error('Create user failed');
@@ -78,7 +77,6 @@ export class UsersController {
     try {
       const salt = await bcrypt.genSalt();
       const hash = await bcrypt.hash(updateUserDto.password, salt);
-      console.log('hash', hash);
       const newUser = { ...updateUserDto, password: hash };
       const response = this.usersService.update(+id, newUser);
       if (!response) return new Error('Update user failed');
