@@ -11,7 +11,7 @@ export class RoomsService {
     @InjectRepository(Room)
     private roomsRepository: Repository<Room>,
   ) {}
-  async create(createRoomDto: CreateRoomDto) {
+  async create(createRoomDto: CreateRoomDto): Promise<boolean> {
     try {
       const newRoom = await this.roomsRepository.create(createRoomDto);
       await this.roomsRepository.save(newRoom);
@@ -21,9 +21,9 @@ export class RoomsService {
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<Room[] | boolean> {
     try {
-      const rooms = (await this.roomsRepository.find()) || false;
+      const rooms: Room[] = await this.roomsRepository.find();
       if (!rooms) return false;
       return rooms;
     } catch (error) {
@@ -31,10 +31,9 @@ export class RoomsService {
     }
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Room | boolean> {
     try {
-      const room =
-        (await this.roomsRepository.findOne({ where: { id } })) || false;
+      const room: Room = await this.roomsRepository.findOne({ where: { id } });
       if (!room) return false;
       return room;
     } catch (error) {
@@ -42,7 +41,7 @@ export class RoomsService {
     }
   }
 
-  async update(id: number, updateRoomDto: UpdateRoomDto) {
+  async update(id: number, updateRoomDto: UpdateRoomDto): Promise<boolean> {
     try {
       const res = await this.roomsRepository.update(id, updateRoomDto);
       if (res.affected === 0) return false;
@@ -51,7 +50,7 @@ export class RoomsService {
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<boolean> {
     try {
       const res = await this.roomsRepository.delete(id);
       if (res.affected === 0) return false;

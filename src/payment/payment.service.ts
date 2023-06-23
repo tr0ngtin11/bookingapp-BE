@@ -6,7 +6,6 @@ import { InvoiceDetail } from 'src/typeorm/entities/InvoiceDetail';
 import { Room } from 'src/typeorm/entities/Room';
 import { User } from 'src/typeorm/entities/User';
 import { Repository } from 'typeorm';
-import { CreatePaymentDto } from './dto/create-payment.dto';
 
 @Injectable()
 export class PaymentService {
@@ -23,17 +22,20 @@ export class PaymentService {
     private bookingStatusRepository: Repository<BookingStatus>,
   ) {}
 
-  async revenue() {
+  async revenue(): Promise<number> {
     try {
       let total = 0;
       const invoice_list = await this.invoiceRepository.find();
       const revenue = invoice_list.reduce((acc, cur) => {
-        total += parseInt(cur.total_price);
+        const curTotal = parseInt(cur.total_price);
+        if (!isNaN(curTotal)) {
+          total += curTotal;
+        }
         return total;
       }, 0);
       return revenue;
     } catch (error) {
-      return 'false';
+      return 0;
     }
   }
 }

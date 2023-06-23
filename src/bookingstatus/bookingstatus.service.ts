@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBookingstatusDto } from './dto/create-bookingstatus.dto';
 import { UpdateBookingstatusDto } from './dto/update-bookingstatus.dto';
 import { BookingStatus } from 'src/typeorm/entities/BookingStatus';
 import { Repository } from 'typeorm';
@@ -18,19 +17,10 @@ export class BookingstatusService {
     private detailinvoicestatusRepository: Repository<InvoiceDetail>,
   ) {}
 
-  create(createBookingstatusDto: CreateBookingstatusDto) {
-    return 'This action adds a new bookingstatus';
-  }
-
-  findAll() {
-    return `This action returns all bookingstatus`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} bookingstatus`;
-  }
-
-  async update(id: number, updateBookingstatusDto: UpdateBookingstatusDto) {
+  async update(
+    id: number,
+    updateBookingstatusDto: UpdateBookingstatusDto,
+  ): Promise<boolean> {
     try {
       await this.bookingstatusRepository.update(
         { invoice: id },
@@ -54,9 +44,5 @@ export class BookingstatusService {
     } catch (error) {
       return false;
     }
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} bookingstatus`;
   }
 }

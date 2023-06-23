@@ -1,6 +1,3 @@
-import { BookingStatus } from 'src/typeorm/entities/BookingStatus';
-import { Invoice } from 'src/typeorm/entities/Invoice';
-
 export interface User_I {
   name: string;
   email: string;

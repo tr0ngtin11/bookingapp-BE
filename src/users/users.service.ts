@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,7 +11,7 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) {}
-  async create(userDetail: User_I) {
+  async create(userDetail: User_I): Promise<boolean> {
     try {
       const newUser = await this.usersRepository.create(userDetail);
       await this.usersRepository.save(newUser);
@@ -22,7 +21,7 @@ export class UsersService {
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<User[] | boolean> {
     try {
       const users = await this.usersRepository.find();
       return users;
@@ -31,7 +30,7 @@ export class UsersService {
     }
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<User | boolean> {
     try {
       const user =
         (await this.usersRepository.findOne({ where: { id } })) || false;
@@ -42,7 +41,7 @@ export class UsersService {
     }
   }
 
-  async findOneByEmail(email: string) {
+  async findOneByEmail(email: string): Promise<User | boolean> {
     try {
       const user =
         (await this.usersRepository.findOne({ where: { email } })) || false;
@@ -53,7 +52,7 @@ export class UsersService {
     }
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<boolean> {
     try {
       const res = await this.usersRepository.update(id, updateUserDto);
       if (res.affected === 0) return false;
@@ -63,7 +62,7 @@ export class UsersService {
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<boolean> {
     try {
       const res = await this.usersRepository.delete(id);
       if (res.affected === 0) return false;

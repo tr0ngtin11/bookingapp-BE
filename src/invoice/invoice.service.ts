@@ -24,23 +24,21 @@ export class InvoiceService {
     private bookingStatusRepository: Repository<BookingStatus>,
   ) {}
 
-  async findAll() {
+  async findAll(): Promise<Invoice_custom[] | boolean> {
     try {
       const invoices = await this.invoiceRepository.find({
         relations: ['user'],
       });
-      let invoices_custom: Invoice_custom[] = [];
+      const invoices_custom: Invoice_custom[] = [];
       if (Array.isArray(invoices)) {
         await Promise.all(
           invoices.map(async (invoice) => {
-            console.log('bookingStatus', invoice.id);
             const id = invoice.id;
             const bookingStatus = await this.bookingStatusRepository.find({
               loadRelationIds: {
                 relations: ['invoice'],
               },
             });
-            console.log('bookingStatus', bookingStatus);
             const e = bookingStatus.find((e) => e.invoice === id);
             invoices_custom.push({
               ...invoice,
@@ -49,41 +47,36 @@ export class InvoiceService {
           }),
         );
       }
-      console.log('1');
       if (!invoices_custom) return false;
+
       return invoices_custom;
     } catch (error) {
       return false;
     }
   }
-
-  async findOneByUserId(id: number) {
+  async findOneByUserId(id: number): Promise<Invoice[] | boolean> {
     try {
       const invoices = await this.invoiceRepository.find({
-        relations: ['user'],
+        loadRelationIds: {
+          relations: ['user'],
+        },
       });
 
-      let list_invoice = [];
+      const list_invoice: Invoice[] = invoices.filter(
+        (invoice) => invoice.user === id,
+      );
 
-      invoices.forEach((invoice) => {
-        const user = invoice.user;
-        const user_ob = { ...(user as Object) };
-        const user_id = user_ob['id'];
-        if (user_id === id) {
-          list_invoice.push(invoice);
-        }
-      });
       return list_invoice;
     } catch (error) {
       return false;
     }
   }
 
-  async create(paymentInfor: CreatePaymentDto) {
+  async create(paymentInfor: CreatePaymentDto): Promise<boolean> {
     try {
       const list_room = paymentInfor.room;
       let total_input = 0;
-      list_room.forEach(async (detail, index) => {
+      list_room.forEach(async (detail) => {
         const room = await this.roomsRepository.findOneBy({
           id: detail.roomId,
         });
@@ -107,7 +100,7 @@ export class InvoiceService {
         invoice: invoice.id,
       });
       await this.bookingStatusRepository.save(booking);
-      paymentInfor.room.forEach(async (detail, index) => {
+      paymentInfor.room.forEach(async (detail) => {
         const room = await this.roomsRepository.findOneBy({
           id: detail.roomId,
         });
@@ -126,7 +119,7 @@ export class InvoiceService {
       return false;
     }
   }
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Invoice | boolean> {
     try {
       const invoice =
         (await this.invoiceRepository.findOne({
@@ -140,7 +133,7 @@ export class InvoiceService {
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<boolean> {
     try {
       await this.invoiceDetailRepository.delete({ invoice: id });
       await this.bookingStatusRepository.delete({ invoice: id });

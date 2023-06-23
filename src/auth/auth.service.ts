@@ -1,7 +1,6 @@
-import { Body, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { async } from 'rxjs';
 import { User_I } from 'src/interface/interface';
 import { User } from 'src/typeorm/entities/User';
 import { UsersService } from 'src/users/users.service';
@@ -15,9 +14,12 @@ export class AuthService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) {}
-  async signIn(email, pass) {
+  async signIn(
+    email: string,
+    pass: string,
+  ): Promise<{ status: boolean; access_token: string; user: User } | boolean> {
     try {
-      const user = await this.usersService.findOneByEmail(email);
+      const user = (await this.usersService.findOneByEmail(email)) as User;
       if (user) {
         const hashPassword = user.password;
         const isMatch = await bcrypt.compare(pass, hashPassword);
@@ -35,7 +37,7 @@ export class AuthService {
     }
   }
 
-  async signUp(@Body() user: User_I) {
+  async signUp(@Body() user: User_I): Promise<boolean> {
     try {
       if (user.email === undefined || user.password === undefined) return false;
       const newUser = await this.usersRepository.create(user);

@@ -9,8 +9,6 @@ import { BookingStatus } from 'src/typeorm/entities/BookingStatus';
 import { User } from 'src/typeorm/entities/User';
 import { Room } from 'src/typeorm/entities/Room';
 import { RoomsModule } from 'src/rooms/rooms.module';
-import { InvoiceDetailModule } from 'src/invoice_detail/invoice_detail.module';
-import { InvoiceDetailService } from 'src/invoice_detail/invoice_detail.service';
 
 @Module({
   imports: [

@@ -13,29 +13,26 @@ export class InvoiceDetailService {
     private roomsRepository: Repository<Room>,
   ) {}
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<InvoiceDetail[] | boolean> {
     try {
       const invoices =
         (await this.invoiceDetailRepository.find({
-          relations: ['invoice', 'room'],
+          loadRelationIds: {
+            relations: ['invoice', 'room'],
+          },
         })) || [];
 
-      let list_invoice = [];
-      invoices.forEach((detail) => {
-        const invoice = detail.invoice;
-        const detail_ob = { ...(invoice as Object) };
-        const detail_id = detail_ob['id'];
-        if (detail_id === id) {
-          list_invoice.push(detail);
-        }
-      });
+      const list_invoice: InvoiceDetail[] = invoices.filter(
+        (invoice) => invoice.invoice === id,
+      );
+
       return list_invoice;
     } catch (error) {
       return false;
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<boolean> {
     try {
       const detail_list = await this.invoiceDetailRepository.findBy({
         invoice: id,
