@@ -1,7 +1,6 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Injectable, Logger } from '@nestjs/common';
 import { Job } from 'bull';
-import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './typeorm/entities/User';
 import { Repository } from 'typeorm';

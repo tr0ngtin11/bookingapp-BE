@@ -1,8 +1,7 @@
-import { Controller, Post, Body, Patch, Param, Res } from '@nestjs/common';
+import { Controller, Body, Patch, Param, Res } from '@nestjs/common';
 import { BookingstatusService } from './bookingstatus.service';
 import { UpdateBookingstatusDto } from './dto/update-bookingstatus.dto';
 import { Response } from 'express';
-import { async } from 'rxjs';
 
 @Controller('bookingstatus')
 export class BookingstatusController {
