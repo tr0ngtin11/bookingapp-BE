@@ -8,7 +8,6 @@ import {
   ParseIntPipe,
   UseGuards,
   Delete,
-  Query,
 } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 
@@ -25,8 +24,8 @@ export class InvoiceController {
   @Roles('admin', 'invoice manager', 'room manager')
   @Get()
   async findAll(
-    @Query('limit') limit: number,
-    @Query('perPage') perPage: number,
+    // @Query('limit') limit: number,
+    // @Query('perPage') perPage: number,
     @Res() res: Response,
   ): Promise<Response> {
     const invoices = await this.invoiceService.findAll();
@@ -34,17 +33,17 @@ export class InvoiceController {
     if (!invoices) return res.json('Get invoices failed');
     res.header('X-Total-Count', invoices_length.toString());
     res.header('Access-Control-Expose-Headers', 'X-Total-Count');
-    const totalPage = Math.ceil(invoices_length / limit);
-    const start = (perPage - 1) * limit ? (perPage - 1) * limit : 0;
-    const end = limit ? (perPage - start) * limit : invoices_length;
-    if (invoices_length != 0 && typeof invoices !== 'boolean') {
-      const listInvoices = invoices.slice(start, end);
-      return res.json({
-        invoices: listInvoices,
-        totalPage,
-        currentPage: perPage,
-      });
-    }
+    // const totalPage = Math.ceil(invoices_length / limit);
+    // const start = (perPage - 1) * limit ? (perPage - 1) * limit : 0;
+    // const end = limit ? (perPage - start) * limit : invoices_length;
+    // if (invoices_length != 0 && typeof invoices !== 'boolean') {
+    //   const listInvoices = invoices.slice(start, end);
+    //   return res.json({
+    //     invoices: listInvoices,
+    //     totalPage,
+    //     currentPage: perPage,
+    //   });
+    // }
     return res.json(invoices);
   }
 

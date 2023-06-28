@@ -20,11 +20,13 @@ export class AuthService {
   ): Promise<{ status: boolean; access_token: string; user: User } | boolean> {
     try {
       const user = (await this.usersService.findOneByEmail(email)) as User;
+      // console.log('🚀 ~ file: auth.service.ts:23 ~ AuthService ~ user:', user);
+
       if (user) {
         const hashPassword = user.password;
         const isMatch = await bcrypt.compare(pass, hashPassword);
         if (isMatch) {
-          const payload = { id: user.id, email: user.email };
+          const payload = { id: user.id, email: user.email, role: user.role };
           return {
             status: true,
             access_token: await this.jwtService.signAsync(payload),

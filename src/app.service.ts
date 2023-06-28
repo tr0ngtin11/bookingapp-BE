@@ -1,8 +1,20 @@
+import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
+import { Queue } from 'bull';
+// import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  constructor(
+    @InjectQueue('transcode') private readonly transcodeQueue: Queue,
+  ) {}
+  // @Cron('*/3 * * * * *')
+  getHello(): void {
+    console.log('Hello World!');
+  }
+  async transcode() {
+    await this.transcodeQueue.add({
+      fileName: './file.mp3',
+    });
   }
 }

@@ -15,16 +15,20 @@ export class InvoiceDetailService {
 
   async findOne(id: number): Promise<InvoiceDetail[] | boolean> {
     try {
-      const invoices =
-        (await this.invoiceDetailRepository.find({
-          loadRelationIds: {
-            relations: ['invoice', 'room'],
-          },
-        })) || [];
+      const invoices = await this.invoiceDetailRepository.find({
+        relations: ['invoice', 'room'],
+      });
 
-      const list_invoice: InvoiceDetail[] = invoices.filter(
-        (invoice) => invoice.invoice === id,
-      );
+      const list_invoice = [];
+
+      invoices.forEach((detail) => {
+        const invoice: any = detail.invoice;
+        const detail_ob = { ...invoice };
+        const detail_id = detail_ob['id'];
+        if (detail_id === id) {
+          list_invoice.push(detail);
+        }
+      });
 
       return list_invoice;
     } catch (error) {

@@ -29,17 +29,27 @@ export class BookingstatusService {
       const detailList = await this.detailinvoicestatusRepository.findBy({
         invoice: id,
       });
+      console.log('List details: ', detailList);
       if (detailList.length > 0) {
-        detailList.forEach(async (detail) => {
+        detailList.map(async (detail) => {
           const room = await this.roomstatusRepository.findOneBy({
             id: detail.room,
           });
-          if (room) {
-            room.status = 'available';
-            await this.roomstatusRepository.save(room);
-          }
+          if (!room) return;
+          room.status = 'available';
+          return await this.roomstatusRepository.save(room);
         });
       }
+      // const subject = 'Booking Details';
+      // const text = `Thank you for choosing our hotel for your vacations!`;
+      // const html = `
+      // <h1>Thank you for choosing our hotel for your vacations!</h1>
+      // <p>Rooms:
+      // </p>
+      // `;
+
+      // await this.emailService.sendEmail(user.email, subject, text, html);
+
       return true;
     } catch (error) {
       return false;

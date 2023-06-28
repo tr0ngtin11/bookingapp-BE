@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Patch, Param, Res } from '@nestjs/common';
+import { Controller, Body, Patch, Param, Res } from '@nestjs/common';
 import { BookingstatusService } from './bookingstatus.service';
 import { UpdateBookingstatusDto } from './dto/update-bookingstatus.dto';
 import { Response } from 'express';
@@ -7,7 +7,6 @@ import { Response } from 'express';
 export class BookingstatusController {
   constructor(private readonly bookingstatusService: BookingstatusService) {}
 
-  @Post()
   @Patch('invoice/:id')
   update(
     @Param('id') id: string,

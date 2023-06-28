@@ -8,6 +8,7 @@ import { User } from 'src/typeorm/entities/User';
 import { Repository } from 'typeorm';
 import { CreatePaymentDto } from './dto/create-payments-dto';
 import { Invoice_custom } from 'src/interface/interface';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class InvoiceService {
@@ -22,6 +23,7 @@ export class InvoiceService {
     private invoiceDetailRepository: Repository<InvoiceDetail>,
     @InjectRepository(BookingStatus)
     private bookingStatusRepository: Repository<BookingStatus>,
+    private readonly emailService: EmailService,
   ) {}
 
   async findAll(): Promise<Invoice_custom[] | boolean> {
@@ -89,6 +91,7 @@ export class InvoiceService {
       const user = await this.usersRepository.findOneBy({
         sdt: paymentInfor.sdt,
       });
+
       const invoice_input: Invoice = {
         user: user.id,
         total_price: total_input.toString(),
@@ -114,6 +117,26 @@ export class InvoiceService {
         }
       });
 
+      let room_list_html = '';
+
+      const render_html = () => {
+        return list_room.map((room_num) => {
+          return (room_list_html += `<b>${room_num.roomId}</b> <br/>`);
+        });
+      };
+      render_html();
+      const subject = 'Booking Details';
+      const text = `Thank you for choosing our hotel for your vacations!`;
+      const html = `
+      <h1>Thank you for choosing our hotel for your vacations!</h1>
+      <p>Rooms: 
+        <br />
+        ${room_list_html}
+      </p>
+      `;
+
+      await this.emailService.sendEmail(user.email, subject, text, html);
+
       return true;
     } catch (error) {
       return false;
@@ -135,10 +158,22 @@ export class InvoiceService {
 
   async remove(id: number): Promise<boolean> {
     try {
+      //  const user = await this.usersRepository.findOneBy({
+      //    sdt: paymentInfor.sdt,
+      //  });
+      console.log(id);
       await this.invoiceDetailRepository.delete({ invoice: id });
       await this.bookingStatusRepository.delete({ invoice: id });
       const invoice = await this.invoiceRepository.delete(id);
       if (invoice.affected === 0) return false;
+      // const subject = 'Booking Details';
+      // const text = `Thank you for choosing our hotel for your vacations!`;
+      // const html = `
+      // <h1>Thank you for choosing our hotel for your vacations!</h1>
+      // `;
+
+      // await this.emailService.sendEmail(user.email, subject, text, html);
+
       return true;
     } catch (error) {
       return false;

@@ -9,12 +9,12 @@ import {
   ParseIntPipe,
   UseGuards,
   Res,
-  Query,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
 import * as bcrypt from 'bcryptjs';
 import { RolesGuard } from 'src/auth/roles.guard';
@@ -47,8 +47,8 @@ export class UsersController {
   @Roles('admin', 'invoice manager', 'room manager')
   @Get()
   async findAll(
-    @Query('limit') limit: number,
-    @Query('perPage') perPage: number,
+    // @Query('limit') limit: number,
+    // @Query('perPage') perPage: number,
     @Res() res: Response,
   ): Promise<Response> {
     try {
@@ -57,17 +57,72 @@ export class UsersController {
       res.header('X-Total-Count', users.length.toString());
       res.header('Access-Control-Expose-Headers', 'X-Total-Count');
 
-      const totalPage = Math.ceil(users.length / limit);
-      const start = (perPage - 1) * limit ? (perPage - 1) * limit : 0;
-      const end = limit ? (perPage - start) * limit : users.length;
-      if (users.length != 0 && typeof users !== 'boolean') {
-        const listUsers = users.slice(start, end);
-        return res.json({
-          users: listUsers,
-          totalPage,
-          currentPage: perPage,
-        });
-      }
+      // const totalPage = Math.ceil(users.length / limit);
+      // const start = (perPage - 1) * limit ? (perPage - 1) * limit : 0;
+      // const end = limit ? (perPage - start) * limit : users.length;
+      // if (users.length != 0 && typeof users !== 'boolean') {
+      //   const listUsers = users.slice(start, end);
+      //   return res.json({
+      //     users: listUsers,
+      //     totalPage,
+      //     currentPage: perPage,
+      //   });
+      // }
+      return res.json(users);
+    } catch (error) {}
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
+  @Get('/admin')
+  async getUsersForAdmin(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<Response> {
+    // console.log(
+    //   '🚀 ~ file: users.controller.ts:79 ~ UsersController ~ getUsersForAdmin ~ res:',
+    // );
+    try {
+      const users = (await this.usersService.getUsersForAdmin()) as Array<User>;
+      if (!users) return res.json('Get users failed');
+      res.header('X-Total-Count', users.length.toString());
+      res.header('Access-Control-Expose-Headers', 'X-Total-Count');
+
+      return res.json(users);
+    } catch (error) {}
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin', 'invoice manager')
+  @Get('/invoice-manager')
+  async getUsersForInvoiceManager(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const users =
+        (await this.usersService.getUsersForManager()) as Array<User>;
+      if (!users) return res.json('Get users failed');
+      res.header('X-Total-Count', users.length.toString());
+      res.header('Access-Control-Expose-Headers', 'X-Total-Count');
+
+      return res.json(users);
+    } catch (error) {}
+  }
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin', 'room manager')
+  @Get('/room-manager')
+  async getUsersFoRoomManager(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const users =
+        (await this.usersService.getUsersForManager()) as Array<User>;
+      if (!users) return res.json('Get users failed');
+      res.header('X-Total-Count', users.length.toString());
+      res.header('Access-Control-Expose-Headers', 'X-Total-Count');
+
       return res.json(users);
     } catch (error) {}
   }
