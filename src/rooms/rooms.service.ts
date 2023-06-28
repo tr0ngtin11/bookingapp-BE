@@ -15,6 +15,7 @@ export class RoomsService {
     try {
       const newRoom = await this.roomsRepository.create(createRoomDto);
       await this.roomsRepository.save(newRoom);
+
       return true;
     } catch (error) {
       return false;

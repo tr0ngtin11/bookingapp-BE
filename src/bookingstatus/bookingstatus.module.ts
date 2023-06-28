@@ -11,12 +11,22 @@ import { InvoiceDetailService } from 'src/invoice_detail/invoice_detail.service'
 import { InvoiceDetail } from 'src/typeorm/entities/InvoiceDetail';
 import { EmailService } from 'src/email/email.service';
 import { Invoice } from 'src/typeorm/entities/Invoice';
+import { UsersService } from 'src/users/users.service';
+import { User } from 'src/typeorm/entities/User';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([BookingStatus, Room, InvoiceDetail, Invoice]),
+    TypeOrmModule.forFeature([
+      BookingStatus,
+      Room,
+      InvoiceDetail,
+      Invoice,
+      User,
+    ]),
     RoomsModule,
     InvoiceDetailModule,
+    UsersModule,
   ],
   controllers: [BookingstatusController],
   providers: [

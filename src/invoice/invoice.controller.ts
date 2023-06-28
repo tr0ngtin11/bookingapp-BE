@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Body,
   Param,
   Res,
@@ -16,6 +17,7 @@ import { Response } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 @Controller('invoice')
 export class InvoiceController {
   constructor(private readonly invoiceService: InvoiceService) {}
@@ -23,11 +25,7 @@ export class InvoiceController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('admin', 'invoice manager', 'room manager')
   @Get()
-  async findAll(
-    // @Query('limit') limit: number,
-    // @Query('perPage') perPage: number,
-    @Res() res: Response,
-  ): Promise<Response> {
+  async findAll(@Res() res: Response): Promise<Response> {
     const invoices = await this.invoiceService.findAll();
     const invoices_length = Array.isArray(invoices) ? invoices.length : 0;
     if (!invoices) return res.json('Get invoices failed');
@@ -83,7 +81,7 @@ export class InvoiceController {
     @Res() res: Response,
   ): Promise<Response> {
     const payment = await this.invoiceService.create(createPaymentDto);
-    if (!payment) return res.json('Create payment failed');
+    if (!payment) return res.json('Create payment failed because rooms full');
     return res.json({
       message: 'Create payment successfully',
     });
@@ -99,6 +97,21 @@ export class InvoiceController {
     if (!invoice) return res.json('Delete invoice failed');
     return res.json({
       message: 'Delete invoice successfully',
+    });
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin', 'invoice manager')
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: string,
+    @Body() updatePaymentDto: UpdateInvoiceDto,
+    @Res() res: Response,
+  ): Promise<Response> {
+    const invoice = await this.invoiceService.update(+id, updatePaymentDto);
+    if (!invoice) return res.json('Update invoice failed');
+    return res.json({
+      message: 'Update invoice successfully',
     });
   }
 }

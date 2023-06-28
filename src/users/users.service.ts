@@ -4,17 +4,24 @@ import { In, Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm/entities/User';
 import { User_I } from 'src/interface/interface';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectQueue('users') private readonly usersQueue: Queue,
   ) {}
   async create(userDetail: User_I): Promise<boolean> {
     try {
-      const newUser = await this.usersRepository.create(userDetail);
-      await this.usersRepository.save(newUser);
+      // const newUser = await this.usersRepository.create(userDetail);
+      // await this.usersRepository.save(newUser);
+      console.log('userDetail', userDetail);
+      await this.usersQueue.add({
+        newUser: userDetail,
+      });
       return true;
     } catch (error) {
       return false;

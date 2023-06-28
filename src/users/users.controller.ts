@@ -24,23 +24,27 @@ import { User } from 'src/typeorm/entities/User';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles('admin')
+  // @UseGuards(AuthGuard, RolesGuard)
+  // @Roles('admin')
   @Post()
   async create(
     @Body() createUserDto: CreateUserDto,
     @Res() res: Response,
   ): Promise<Response> {
-    const salt = await bcrypt.genSalt();
-    const hash = await bcrypt.hash(createUserDto.password, salt);
-    const newUser = { ...createUserDto, password: hash };
-    const user = this.usersService.create(newUser);
-    if (!user) return res.json('Create user failed');
-    res.header('X-Total-Count', '1');
-    res.header('Access-Control-Expose-Headers', 'X-Total-Count');
-    return res.json({
-      message: 'Create user successfully',
-    });
+    try {
+      const salt = await bcrypt.genSalt();
+      const hash = await bcrypt.hash(createUserDto.password, salt);
+      const newUser = { ...createUserDto, password: hash };
+      const user = this.usersService.create(newUser);
+      if (!user) return res.json('Create user failed');
+      res.header('X-Total-Count', '1');
+      res.header('Access-Control-Expose-Headers', 'X-Total-Count');
+      return res.json({
+        message: 'Create user successfully',
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @UseGuards(AuthGuard, RolesGuard)

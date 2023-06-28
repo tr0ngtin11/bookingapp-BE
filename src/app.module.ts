@@ -42,7 +42,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'triet299',
+      password: '',
       database: 'bookingapp',
       entities: [
         User,

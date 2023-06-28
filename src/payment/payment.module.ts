@@ -9,6 +9,7 @@ import { User } from 'src/typeorm/entities/User';
 import { Room } from 'src/typeorm/entities/Room';
 import { RoomsModule } from 'src/rooms/rooms.module';
 import { UsersModule } from 'src/users/users.module';
+import { EmailService } from 'src/email/email.service';
 
 @Module({
   imports: [
@@ -23,6 +24,6 @@ import { UsersModule } from 'src/users/users.module';
     UsersModule,
   ],
   controllers: [PaymentController],
-  providers: [PaymentService],
+  providers: [PaymentService, EmailService],
 })
 export class PaymentModule {}

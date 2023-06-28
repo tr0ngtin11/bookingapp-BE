@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { CreatePaymentDto } from './dto/create-payments-dto';
 import { Invoice_custom } from 'src/interface/interface';
 import { EmailService } from 'src/email/email.service';
+import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 
 @Injectable()
 export class InvoiceService {
@@ -76,18 +77,21 @@ export class InvoiceService {
 
   async create(paymentInfor: CreatePaymentDto): Promise<boolean> {
     try {
+      let roomOrdered = 0;
       const list_room = paymentInfor.room;
       let total_input = 0;
       list_room.forEach(async (detail) => {
         const room = await this.roomsRepository.findOneBy({
           id: detail.roomId,
         });
-        if (room) {
+        if (room && room.status === 'available') {
+          roomOrdered += 1;
           total_input += parseInt(room.price);
           room.status = 'unavailable';
           this.roomsRepository.save(room);
         }
       });
+      if (roomOrdered !== list_room.length) return false;
       const user = await this.usersRepository.findOneBy({
         sdt: paymentInfor.sdt,
       });
@@ -151,6 +155,21 @@ export class InvoiceService {
         })) || false;
       if (!invoice) return false;
       return invoice;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async update(
+    id: number,
+    updateInvoiceDto: UpdateInvoiceDto,
+  ): Promise<boolean> {
+    try {
+      const invoice = await this.invoiceRepository.findOneBy({ id });
+
+      if (!invoice) return false;
+      await this.invoiceRepository.update(id, updateInvoiceDto);
+      return true;
     } catch (error) {
       return false;
     }

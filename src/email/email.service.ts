@@ -11,8 +11,8 @@ export class EmailService {
       port: 587,
       secure: false, // true for 465, false for other ports
       auth: {
-        user: '1959042@itec.hcmus.edu.vn',
-        pass: 'bclczmwnuoebrsit',
+        user: '20520811@gm.uit.edu.vn',
+        pass: 'vpagnrqefyhkjzok',
       },
     });
   }
@@ -24,7 +24,7 @@ export class EmailService {
     html: string,
   ): Promise<void> {
     const mailOptions: nodemailer.SendMailOptions = {
-      from: '1959042@itec.hcmus.edu.vn',
+      from: 'trantrongtin01012002@gmail.com',
       to,
       subject,
       text,
