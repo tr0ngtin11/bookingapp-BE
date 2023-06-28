@@ -20,7 +20,7 @@ export class BookingstatusService {
   async update(
     id: number,
     updateBookingstatusDto: UpdateBookingstatusDto,
-  ): Promise<boolean> {
+  ): Promise<BookingStatus | boolean> {
     try {
       await this.bookingstatusRepository.update(
         { invoice: id },
@@ -40,7 +40,14 @@ export class BookingstatusService {
           }
         });
       }
-      return true;
+      const bookingStatus = await this.bookingstatusRepository.findOne({
+        where: { invoice: id },
+        loadRelationIds: {
+          relations: ['user'],
+        },
+      });
+      console.log(bookingStatus);
+      return bookingStatus;
     } catch (error) {
       return false;
     }

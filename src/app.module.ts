@@ -15,6 +15,8 @@ import { PaymentModule } from './payment/payment.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { InvoiceDetailModule } from './invoice_detail/invoice_detail.module';
 import { BookingstatusModule } from './bookingstatus/bookingstatus.module';
+import { MailModule } from './mail/mail.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -42,6 +44,8 @@ import { BookingstatusModule } from './bookingstatus/bookingstatus.module';
     InvoiceModule,
     InvoiceDetailModule,
     BookingstatusModule,
+    MailModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
