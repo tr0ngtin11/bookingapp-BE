@@ -15,17 +15,34 @@ import { PaymentModule } from './payment/payment.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { InvoiceDetailModule } from './invoice_detail/invoice_detail.module';
 import { BookingstatusModule } from './bookingstatus/bookingstatus.module';
-import { MailModule } from './mail/mail.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { EmailModule } from './email/email.module';
+import { BullModule } from '@nestjs/bull';
+import { TranscodeConsumer } from './transcode.consumer';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get('REDIS_HOST'),
+          port: configService.get('REDIS_PORT'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
+    BullModule.registerQueue({
+      name: 'transcode',
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '',
+      password: 'triet299',
       database: 'bookingapp',
       entities: [
         User,
@@ -37,6 +54,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       ],
       synchronize: true,
     }),
+    ScheduleModule.forRoot(),
     UsersModule,
     RoomsModule,
     AuthModule,
@@ -44,10 +62,9 @@ import { ScheduleModule } from '@nestjs/schedule';
     InvoiceModule,
     InvoiceDetailModule,
     BookingstatusModule,
-    MailModule,
-    ScheduleModule.forRoot(),
+    EmailModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TranscodeConsumer],
 })
 export class AppModule {}

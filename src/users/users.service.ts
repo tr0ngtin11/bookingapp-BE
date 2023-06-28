@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm/entities/User';
 import { User_I } from 'src/interface/interface';
@@ -27,6 +27,30 @@ export class UsersService {
       return users;
     } catch (error) {
       return false;
+    }
+  }
+
+  async getUsersForAdmin(): Promise<User[]> {
+    try {
+      const result = await this.usersRepository.find({
+        where: { role: Not('admin') },
+      });
+
+      return result;
+    } catch (error) {
+      throw new BadRequestException(400, 'Users Not Found');
+    }
+  }
+
+  async getUsersForManager(): Promise<User[]> {
+    try {
+      const result = await this.usersRepository.find({
+        where: { role: In(['guest']) },
+      });
+
+      return result;
+    } catch (error) {
+      throw new BadRequestException(400, 'Users Not Found');
     }
   }
 

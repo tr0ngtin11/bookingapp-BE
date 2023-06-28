@@ -9,14 +9,21 @@ import { RoomsService } from 'src/rooms/rooms.service';
 import { InvoiceDetailModule } from 'src/invoice_detail/invoice_detail.module';
 import { InvoiceDetailService } from 'src/invoice_detail/invoice_detail.service';
 import { InvoiceDetail } from 'src/typeorm/entities/InvoiceDetail';
+import { EmailService } from 'src/email/email.service';
+import { Invoice } from 'src/typeorm/entities/Invoice';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([BookingStatus, Room, InvoiceDetail]),
+    TypeOrmModule.forFeature([BookingStatus, Room, InvoiceDetail, Invoice]),
     RoomsModule,
     InvoiceDetailModule,
   ],
   controllers: [BookingstatusController],
-  providers: [BookingstatusService, RoomsService, InvoiceDetailService],
+  providers: [
+    BookingstatusService,
+    RoomsService,
+    InvoiceDetailService,
+    EmailService,
+  ],
 })
 export class BookingstatusModule {}

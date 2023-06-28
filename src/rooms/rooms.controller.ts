@@ -9,7 +9,6 @@ import {
   Res,
   ParseIntPipe,
   UseGuards,
-  Query,
 } from '@nestjs/common';
 import { RoomsService } from './rooms.service';
 import { CreateRoomDto } from './dto/create-room.dto';
@@ -45,11 +44,7 @@ export class RoomsController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('admin', 'room manager')
   @Get()
-  async findAll(
-    @Query('limit') limit: number,
-    @Query('perPage') perPage: number,
-    @Res() res: Response,
-  ): Promise<Response> {
+  async findAll(@Res() res: Response): Promise<Response> {
     try {
       const rooms = await this.roomsService.findAll();
       if (!rooms) return res.json('Get rooms failed');
@@ -57,17 +52,16 @@ export class RoomsController {
         res.header('X-Total-Count', rooms.length.toString());
         res.header('Access-Control-Expose-Headers', 'X-Total-Count');
       }
-      if (typeof rooms !== 'boolean' && rooms.length != 0) {
-        const totalPage = Math.ceil(rooms.length / limit);
-        const start = (perPage - 1) * limit ? (perPage - 1) * limit : 0;
-        const end = limit ? (perPage - start) * limit : rooms.length;
-        const listRooms = rooms.slice(start, end);
-        return res.json({
-          rooms: listRooms,
-          totalPage,
-          currentPage: perPage,
-        });
-      }
+      // console.log('Limit ', limit);
+      // if (typeof rooms !== 'boolean' && rooms.length != 0) {
+      //   // const totalPage = Math.ceil(rooms.length / limit);
+      //   const start = (perPage - 1) * limit ? (perPage - 1) * limit : 0;
+      //   const end = limit ? (perPage - start) * limit : rooms.length;
+      //   const listRooms = rooms.slice(start, end);
+      //   res.header('X-Total-Count', listRooms.length.toString());
+      //   res.header('Access-Control-Expose-Headers', 'X-Total-Count');
+      //   return res.json(listRooms);
+      // }
       return res.json(rooms);
     } catch (error) {
       return res.json('Get rooms failed');
