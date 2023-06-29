@@ -45,7 +45,6 @@ export class PaymentService {
   @Cron('*/1 * * * *')
   async sendRevenue2Admin(): Promise<void> {
     try {
-      console.log('sendRevenue2Admin');
       let total = 0;
       const invoice_list = await this.invoiceRepository.find();
       const revenue = invoice_list.reduce((acc, cur) => {
@@ -70,7 +69,6 @@ export class PaymentService {
         html,
       );
     } catch (error) {
-      console.log(error);
     }
   }
 }

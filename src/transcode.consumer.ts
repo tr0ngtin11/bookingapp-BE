@@ -30,12 +30,11 @@ export class UsersConsumer {
   @Process()
   async createUser(job: Job<{ newUser: User }>): Promise<void> {
     const { newUser } = job.data;
-    console.log('user', newUser);
     try {
       // Xử lý công việc tạo người dùng ở đây
       await this.usersRepository.create(newUser);
       await this.usersRepository.save(newUser);
-      console.log('Người dùng mới đã được tạo và lưu vào cơ sở dữ liệu.');
+
     } catch (error) {
       console.error('Lỗi trong quá trình tạo người dùng:', error);
       throw error;

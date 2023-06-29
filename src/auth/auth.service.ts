@@ -20,7 +20,7 @@ export class AuthService {
   ): Promise<{ status: boolean; access_token: string; user: User } | boolean> {
     try {
       const user = (await this.usersService.findOneByEmail(email)) as User;
-      // console.log('🚀 ~ file: auth.service.ts:23 ~ AuthService ~ user:', user);
+    
 
       if (user) {
         const hashPassword = user.password;

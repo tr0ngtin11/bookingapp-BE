@@ -39,13 +39,11 @@ export class BookingstatusService {
       const detailListFilter = detailList.filter(
         (detail) => detail.invoice === id,
       );
-      console.log('List details: ', detailList);
       if (detailListFilter.length > 0) {
         detailListFilter.map(async (detail) => {
           const room = await this.roomstatusRepository.findOneBy({
             id: detail.room,
           });
-          console.log('Room: ', room);
           if (!room) return;
           room.status = 'available';
           return await this.roomstatusRepository.save(room);
@@ -55,9 +53,7 @@ export class BookingstatusService {
         where: { invoice: id },
         loadRelationIds: true,
       });
-      // const user: User = bookingStatus.user;
-      console.log('type', typeof bookingStatus.user);
-      // const idUser = bookingStatus.user;
+
       const guest = await this.usersRepository.findOne({
         where: { id: bookingStatus.user },
       });

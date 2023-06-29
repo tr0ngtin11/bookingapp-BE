@@ -18,7 +18,6 @@ export class UsersService {
     try {
       // const newUser = await this.usersRepository.create(userDetail);
       // await this.usersRepository.save(newUser);
-      console.log('userDetail', userDetail);
       await this.usersQueue.add({
         newUser: userDetail,
       });

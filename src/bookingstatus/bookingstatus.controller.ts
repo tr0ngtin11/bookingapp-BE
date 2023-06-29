@@ -23,7 +23,6 @@ export class BookingstatusController {
         message: 'Update booking status failed',
       });
     }
-    console.log('a', result);
     return res.json(result);
   }
 }

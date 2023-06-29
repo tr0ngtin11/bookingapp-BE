@@ -84,7 +84,7 @@ export class InvoiceService {
         const room = await this.roomsRepository.findOneBy({
           id: detail.roomId,
         });
-        if (room && room.status === 'available') {
+        if (room && room?.status === 'available') {
           roomOrdered += 1;
           total_input += parseInt(room.price);
           room.status = 'unavailable';
@@ -146,7 +146,7 @@ export class InvoiceService {
       return false;
     }
   }
-  async findOne(id: number): Promise<Invoice | boolean> {
+  async findOne(id: number): Promise<Invoice_custom | boolean> {
     try {
       const invoice =
         (await this.invoiceRepository.findOne({
@@ -154,7 +154,15 @@ export class InvoiceService {
           relations: ['user'],
         })) || false;
       if (!invoice) return false;
-      return invoice;
+
+      const bookingStatus = await this.bookingStatusRepository.find({
+        loadRelationIds: {
+          relations: ['invoice'],
+        },
+      });
+      const e = bookingStatus.find((e) => e.invoice === id);
+      const invoice_custom: Invoice_custom = { ...invoice, status: e?.status };
+      return invoice_custom;
     } catch (error) {
       return false;
     }
@@ -177,21 +185,10 @@ export class InvoiceService {
 
   async remove(id: number): Promise<boolean> {
     try {
-      //  const user = await this.usersRepository.findOneBy({
-      //    sdt: paymentInfor.sdt,
-      //  });
-      console.log(id);
       await this.invoiceDetailRepository.delete({ invoice: id });
       await this.bookingStatusRepository.delete({ invoice: id });
       const invoice = await this.invoiceRepository.delete(id);
       if (invoice.affected === 0) return false;
-      // const subject = 'Booking Details';
-      // const text = `Thank you for choosing our hotel for your vacations!`;
-      // const html = `
-      // <h1>Thank you for choosing our hotel for your vacations!</h1>
-      // `;
-
-      // await this.emailService.sendEmail(user.email, subject, text, html);
 
       return true;
     } catch (error) {
